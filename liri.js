@@ -34,8 +34,7 @@ const logMovie = (body) => {
 }
 
 // spotify log function
-// Artist, song name, preview link, album.
-const logSong = (data) => {  
+const logSong = (data) => {
     for (var i = 0; i < data.tracks.items.length; i++) {
       console.log("Artists: ");
         for (var j = 0; j < data.tracks.items[i].artists.length; j++) {
@@ -83,10 +82,16 @@ switch (nodeArgs[2]) {
         });
         break;
     case "spotify-this-song":
+    var songName = "";
+    if (argument) {
+        songName = argument;
+    } else {
+        songName = "dancing in the moonlight";
+    }
         console.log("spotify-this-song");
         spotify.search({
             type: 'track',
-            query: 'dancing in the moonlight'
+            query: songName
         }, function(err, data) {
             if (err) {
                 console.log('Error occurred: ' + err);

@@ -2,6 +2,7 @@ var request = require("request");
 var nodeArgs = process.argv;
 var Twitter = require('twitter');
 var keys = require("./keys.js");
+var spotify = require('spotify');
 
 // read arguments
 var argument = "";
@@ -12,6 +13,40 @@ for (var i = 3; i < nodeArgs.length; i++) {
         argument += nodeArgs[i];
     }
 }
+
+// movie log function
+const logMovie = (body) => {
+    var obj = JSON.parse(body);
+    var output = {
+        Title: null,
+        Year: null,
+        imdbRating: null,
+        Country: null,
+        Language: null,
+        Plot: null,
+        Actors: null,
+        tomatoRating: null,
+        tomatoURL: null
+    };
+    for (var key in output) {
+        console.log(key + " : " + obj[key]);
+    }
+}
+
+// spotify log function
+// Artist, song name, preview link, album.
+const logSong = (data) => {  
+    for (var i = 0; i < data.tracks.items.length; i++) {
+      console.log("Artists: ");
+        for (var j = 0; j < data.tracks.items[i].artists.length; j++) {
+            console.log(data.tracks.items[i].artists[j].name); //artists
+        }
+        console.log("Song: " + data.tracks.items[i].name); // song name
+        console.log("Preview url" + data.tracks.items[i].preview_url); //preview
+        console.log("Album: "  + data.tracks.items[i].album.name); //album
+    }
+}
+
 switch (nodeArgs[2]) {
     case "movie-this":
         // movies
@@ -20,24 +55,6 @@ switch (nodeArgs[2]) {
             movieName = argument;
         } else {
             movieName = "Mr.+Nobody";
-        }
-        // movie log function
-        const logMovie = (body) => {
-            var obj = JSON.parse(body);
-            var output = {
-                Title: null,
-                Year: null,
-                imdbRating: null,
-                Country: null,
-                Language: null,
-                Plot: null,
-                Actors: null,
-                tomatoRating: null,
-                tomatoURL: null
-            };
-            for (var key in output) {
-                console.log(key + " : " + obj[key]);
-            }
         }
         var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json&tomatoes=true";
         request(queryUrl, function(error, response, body) {
@@ -56,29 +73,29 @@ switch (nodeArgs[2]) {
             access_token_key: twitterParams.access_token_key,
             access_token_secret: twitterParams.access_token_secret
         });
-        client.get('followers/list', {count: '2'}, function(error, tweets, response) {
+        client.get('followers/list', {
+            count: '2'
+        }, function(error, tweets, response) {
             if (error) throw error;
             console.log(tweets); // The favorites.
-            // console.log(response); 
+            // console.log(response);
             // Raw response object.
         });
         break;
     case "spotify-this-song":
         console.log("spotify-this-song");
+        spotify.search({
+            type: 'track',
+            query: 'dancing in the moonlight'
+        }, function(err, data) {
+            if (err) {
+                console.log('Error occurred: ' + err);
+                return;
+            }
+            logSong(data);
+        });
         break;
     case "do-what-it-says":
         console.log("do-what-it-says");
         break;
 } //end switch
-
-
-// switch(expression) {
-//     case n:
-//         code block
-//         break;
-//     case n:
-//         code block
-//         break;
-//     default:
-//         code block
-// }

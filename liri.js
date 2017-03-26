@@ -72,13 +72,12 @@ switch (nodeArgs[2]) {
             access_token_key: twitterParams.access_token_key,
             access_token_secret: twitterParams.access_token_secret
         });
-        client.get('followers/list', {
+        client.get('statuses/user_timeline', {
             count: '2'
         }, function(error, tweets, response) {
             if (error) throw error;
-            console.log(tweets); // The favorites.
-            // console.log(response);
-            // Raw response object.
+            console.log(tweets[0].text); // text
+            console.log(tweets[0].created_at); // when
         });
         break;
     case "spotify-this-song":

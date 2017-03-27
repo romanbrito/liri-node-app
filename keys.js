@@ -6,7 +6,3 @@ exports.twitterKeys = {
   access_token_key: '845686114937683969-1jAOAUHdh2rMqTNIyvhr5bwphuELPyN',
   access_token_secret: 'M3owJhE5ivcn1PAyWQZXz2kmMVaGvYqBOuxfXL6zQXxT8',
 }
-
-// client.get(path, params, callback);
-// client.post(path, params, callback);
-// client.stream(path, params, callback);

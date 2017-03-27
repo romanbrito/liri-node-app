@@ -3,6 +3,7 @@ var nodeArgs = process.argv;
 var Twitter = require('twitter');
 var keys = require("./keys.js");
 var spotify = require('spotify');
+var fs = require("fs");
 
 // read arguments
 var argument = "";
@@ -46,7 +47,23 @@ const logSong = (data) => {
     }
 }
 
-switch (nodeArgs[2]) {
+// spotify search Song
+const searchSong = (songName) => {
+spotify.search({
+    type: 'track',
+    query: songName
+}, function(err, data) {
+    if (err) {
+        console.log('Error occurred: ' + err);
+        return;
+    }
+    logSong(data);
+});
+}
+
+const switchFunc = (arg, argument) => {
+
+switch (arg) {
     case "movie-this":
         // movies
         var movieName = "";
@@ -85,21 +102,20 @@ switch (nodeArgs[2]) {
     if (argument) {
         songName = argument;
     } else {
-        songName = "dancing in the moonlight";
+        songName = "the sign ace of base";
     }
         console.log("spotify-this-song");
-        spotify.search({
-            type: 'track',
-            query: songName
-        }, function(err, data) {
-            if (err) {
-                console.log('Error occurred: ' + err);
-                return;
-            }
-            logSong(data);
-        });
+        searchSong(songName);
         break;
     case "do-what-it-says":
         console.log("do-what-it-says");
+        fs.readFile("random.txt", "utf8", (err, data) => {
+          data = data.split(",");
+          console.log(data[0]);
+          switchFunc(data[0], data[1]);
+        });
         break;
 } //end switch
+} //end switch function
+
+switchFunc(nodeArgs[2], argument); // call the main function
